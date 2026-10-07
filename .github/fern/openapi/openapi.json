@@ -3175,6 +3175,11 @@
               "null"
             ]
           },
+          "source": {
+            "description": "Provider/model that produced this message (`provider_type/provider_name/model_name`).",
+            "minLength": 1,
+            "type": "string"
+          },
           "thread_id": {
             "description": "Thread that emitted this message (`main` for the root agent).",
             "type": "string"
@@ -3197,6 +3202,7 @@
           }
         },
         "required": [
+          "source",
           "type",
           "id",
           "thread_id",

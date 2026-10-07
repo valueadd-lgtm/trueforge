@@ -19,6 +19,7 @@ export const ModelMessageEvent: core.serialization.ObjectSchema<
     name: core.serialization.string().optional(),
     reasoningContent: core.serialization.property("reasoning_content", core.serialization.string().optional()),
     refusal: core.serialization.string().optionalNullable(),
+    source: core.serialization.string(),
     threadId: core.serialization.property("thread_id", core.serialization.string()),
     toolCalls: core.serialization.property("tool_calls", core.serialization.list(ToolCall).optional()),
     type: core.serialization.stringLiteral("model.message"),
@@ -34,6 +35,7 @@ export declare namespace ModelMessageEvent {
         name?: string | null;
         reasoning_content?: string | null;
         refusal?: (string | null | undefined) | null;
+        source: string;
         thread_id: string;
         tool_calls?: ToolCall.Raw[] | null;
         type: "model.message";

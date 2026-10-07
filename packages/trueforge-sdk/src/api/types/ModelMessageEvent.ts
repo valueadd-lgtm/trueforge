@@ -16,6 +16,8 @@ export interface ModelMessageEvent {
     reasoningContent?: string;
     /** Optional refusal text. */
     refusal?: string | null;
+    /** Provider/model that produced this message (`provider_type/provider_name/model_name`). */
+    source: string;
     /** Thread that emitted this message (`main` for the root agent). */
     threadId: string;
     toolCalls?: TrueForge.ToolCall[];

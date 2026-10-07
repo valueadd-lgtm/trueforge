@@ -43,6 +43,11 @@ class ModelMessageEvent(UncheckedBaseModel):
     Optional refusal text.
     """
 
+    source: str = pydantic.Field()
+    """
+    Provider/model that produced this message (`provider_type/provider_name/model_name`).
+    """
+
     thread_id: str = pydantic.Field()
     """
     Thread that emitted this message (`main` for the root agent).

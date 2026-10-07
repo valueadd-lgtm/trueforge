@@ -84,6 +84,7 @@ describe('Gemini tool thoughtSignature replay round-trip', () => {
           makeFinishStep('tool-calls'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -118,6 +119,7 @@ describe('Gemini tool thoughtSignature replay round-trip', () => {
           makeFinishStep('tool-calls'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -193,6 +195,7 @@ describe.each(REASONING_CASES)(
             makeFinishStep('stop'),
           ]),
           chunkMeta: CHUNK_META,
+          source: 'test/test/test-model',
         }),
       );
 
@@ -236,6 +239,7 @@ describe('anthropic reasoning replay, on the shape Anthropic actually sends', ()
           makeFinishStep('tool-calls'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -267,6 +271,7 @@ describe('anthropic reasoning replay, on the shape Anthropic actually sends', ()
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -304,6 +309,7 @@ describe('google-gemini reasoning replay round-trip', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 

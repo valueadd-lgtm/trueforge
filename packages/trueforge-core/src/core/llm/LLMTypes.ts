@@ -99,14 +99,18 @@ export const InternalEnrichedAssistantMessageSchema = RawAssistantMessageSchema.
   tool_calls: z.array(InternalEnrichedToolCallSchema).optional(),
 });
 
-// `thinking_blocks` / `source` omitted: kept on the internal message for context replay, hidden from the client event.
+// `thinking_blocks` omitted: kept on the internal message for context replay, hidden from the client event.
+// `source` is required on the public message / `model.message` wire shape (overrides Raw optional).
 export const EnrichedAssistantMessageSchema = RawAssistantMessageSchema.omit({
   tool_calls: true,
   thinking_blocks: true,
-  source: true,
 })
   .extend({
     tool_calls: z.array(EnrichedToolCallSchema).optional(),
+    source: z
+      .string()
+      .min(1)
+      .describe('Provider/model that produced this message (`provider_type/provider_name/model_name`).'),
   })
   .openapi('EnrichedAssistantMessage');
 

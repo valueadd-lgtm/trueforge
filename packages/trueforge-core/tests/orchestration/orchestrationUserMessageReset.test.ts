@@ -61,6 +61,7 @@ function baseThreadInput(
   return {
     definition: {
       modelClient: {
+        source: 'test/test/test-model',
         create: jest.fn().mockImplementation(() => textReplyStream(ROOT_REPLY)),
         createNonStream: jest.fn().mockImplementation(() => textReplyStream(ROOT_REPLY)),
       },
@@ -105,6 +106,7 @@ describe('orchestration: user-message reset', () => {
         agentInfo: { type: 'dynamic', name: 'worker', input: 'task' },
         definition: {
           modelClient: {
+            source: 'test/test/test-model',
             create: jest.fn().mockImplementation(() => {
               throw new Error('cancelled child must not call the model');
             }),
@@ -198,6 +200,7 @@ describe('orchestration: user-message reset', () => {
             thread_id: CHILD_ID,
             content: FINISHED_CHILD_ANSWER,
             finish_reason: 'stop',
+            source: 'test/test/test-model',
           },
           send_to_parent: {
             role: 'tool',

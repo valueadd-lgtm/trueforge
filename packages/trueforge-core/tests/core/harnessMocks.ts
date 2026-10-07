@@ -8,9 +8,10 @@ import { NOOP_AGENT_TRACING } from '../../src/core/tracing/NoopAgentTracing';
 
 export const OBJECT_INPUT_SCHEMA = { type: 'object' as const, properties: {} };
 
-/** Minimal typed ILLM stub — both methods required by the interface. */
+/** Minimal typed ILLM stub — methods + source required by the interface. */
 export function makeMockILLM(overrides: Partial<ILLM> = {}): ILLM {
   return {
+    source: 'test/test/test-model',
     create: jest.fn(),
     createNonStream: jest.fn(),
     ...overrides,

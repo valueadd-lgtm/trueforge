@@ -156,6 +156,7 @@ describe('AgentThread LLM request mapping (end-to-end)', () => {
   it('forwards thinking_blocks, reasoning_content, and provider_specific_fields; strips tool_info', async () => {
     let capturedBody: LLMCreateParamsStreaming | undefined;
     const modelClient: ILLM = {
+      source: 'test/test/test-model',
       create: jest.fn().mockImplementation((body: LLMCreateParamsStreaming) => {
         capturedBody = body;
         return finalAnswerStream();

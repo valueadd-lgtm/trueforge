@@ -294,5 +294,6 @@ export function makeModelMessageEvent() {
     created_at: new Date().toISOString(),
     thread_id: MAIN_THREAD_ID,
     content: 'hi',
+    source: 'test/test/test-model',
   };
 }

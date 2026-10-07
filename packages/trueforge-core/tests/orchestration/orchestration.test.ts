@@ -42,6 +42,7 @@ describe('orchestration: mocked LLM and no tools', () => {
     const thread = new AgentThread({
       definition: {
         modelClient: {
+          source: 'test/test/test-model',
           create: jest.fn().mockImplementation(() => textReplyStream(REPLY)),
           createNonStream: jest.fn().mockImplementation(() => textReplyStream(REPLY)),
         },

@@ -1121,9 +1121,12 @@ interface ChunkMeta {
 export async function* mapStreamToChunks({
   stream,
   chunkMeta,
+  source,
 }: {
   stream: AsyncIterable<TextStreamPart<ToolSet>>;
   chunkMeta: ChunkMeta;
+  /** Bound client provenance; stamped on the assembled message from the start of the drain. */
+  source: string;
 }): AsyncGenerator<ExtendedChatCompletionChunk, RawAssistantMessageWithUsage, unknown> {
   const makeBase = (): Omit<ExtendedChatCompletionChunk, 'choices' | 'usage'> => ({
     id: chunkMeta.id,
@@ -1358,6 +1361,7 @@ export async function* mapStreamToChunks({
   const output: RawAssistantMessage = {
     role: 'assistant',
     content: accumulatedText || null,
+    source,
     ...(accumulatedReasoning.length > 0 ? { reasoning_content: accumulatedReasoning } : {}),
     ...(accumulatedThinking.length > 0 ? { thinking_blocks: accumulatedThinking } : {}),
     ...(toolCalls.length > 0 ? { tool_calls: toolCalls } : {}),
@@ -1382,12 +1386,18 @@ export class VercelAILLM implements ILLM {
     this.signal = config.signal;
   }
 
+  get source(): string {
+    const { provider, model } = this.config.providerConfig;
+    return `${provider.type}/${provider.name}/${model.name}`;
+  }
+
   async *create(
     body: LLMCreateParamsStreaming,
   ): AsyncGenerator<ExtendedChatCompletionChunk, RawAssistantMessageWithUsage, unknown> {
     const { providerConfig } = this.config;
     const languageModel = buildLanguageModel(providerConfig);
-    const { provider, model } = providerConfig;
+    const { provider } = providerConfig;
+    const source = this.source;
 
     const { instructions, messages } = convertMessages({
       messages: body.messages,
@@ -1473,9 +1483,7 @@ export class VercelAILLM implements ILLM {
     };
 
     try {
-      const result = yield* mapStreamToChunks({ stream: streamResult.stream, chunkMeta });
-      result.output.source = `${provider.type}/${provider.name}/${model.name}`;
-      return result;
+      return yield* mapStreamToChunks({ stream: streamResult.stream, chunkMeta, source });
     } catch (error) {
       if (this.signal?.aborted) {
         this.logger.debug('LLM stream aborted', extractErrorLogFields(error));

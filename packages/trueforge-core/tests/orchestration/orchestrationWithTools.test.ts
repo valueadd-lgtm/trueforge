@@ -115,6 +115,7 @@ describe('orchestration: dynamic sub-agent', () => {
       definition: {
         // This is an instance if ILLM
         modelClient: {
+          source: 'test/test/test-model',
           create: jest
             .fn()
             .mockImplementationOnce(() => createSubAgentStream())
@@ -155,6 +156,7 @@ describe('orchestration: dynamic sub-agent', () => {
       parent,
     }) => {
       childLLM = {
+        source: 'test/test/test-model',
         create: jest.fn().mockImplementation(() => textReplyStream(CHILD_REPLY)),
         createNonStream: jest.fn().mockImplementation(() => textReplyStream(CHILD_REPLY)),
       };

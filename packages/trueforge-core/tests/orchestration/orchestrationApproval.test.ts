@@ -304,7 +304,7 @@ describe('AgentThreadOrchestrator.applyApprovalPolicies', () => {
     toolSet = makeApprovalGatedWriteNoteToolSet().toolSet;
     const thread = new AgentThread({
       definition: {
-        modelClient: { create: jest.fn(), createNonStream: jest.fn() },
+        modelClient: { source: 'test/test/test-model', create: jest.fn(), createNonStream: jest.fn() },
         instruction: INSTRUCTION,
         messages: undefined,
         modelParams: undefined,
@@ -468,6 +468,7 @@ function makeApprovalHarness(finalReply: string): {
   const agentThreadInput: AgentThreadConstructorInput = {
     definition: {
       modelClient: {
+        source: 'test/test/test-model',
         create: jest
           .fn()
           .mockImplementationOnce(() => writeNoteToolCallStream())

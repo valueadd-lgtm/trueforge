@@ -248,14 +248,17 @@ function buildModelMessageEvent({
   usage: ModelMessageUsage | undefined;
   id: string;
 }): ModelMessageEvent {
-  // `thinking_blocks` / `source` stay on the context message for replay; strip them from the client event.
-  // `reasoning_content` stays on the event for UI replay (exact streamed concat).
-  const { role, tool_calls, thinking_blocks, source, content, ...rest } = assistantMessage;
+  // `thinking_blocks` stay on the context message for replay; strip from the client event.
+  // `source` and `reasoning_content` stay on the event (provider/model provenance + UI replay).
+  const { role, tool_calls, thinking_blocks, content, source, ...rest } = assistantMessage;
   void role;
   void thinking_blocks;
-  void source;
+  if (source === undefined || source.length === 0) {
+    throw new Error('model.message requires source');
+  }
   const event: ModelMessageEvent = {
     ...rest,
+    source,
     // Tool-only completions store content: null on context (OpenAI replay) but the
     // SSE placeholder omits the field. Drop null/empty here so listTurnEvents JSON
     // matches a folded stream.
@@ -1099,11 +1102,13 @@ export class AgentThread {
     const llmStream = this.definition.modelClient.create(requestBody);
 
     // We start the delta stream with a model message event.
+    // `source` is known from the bound client before any chunk arrives.
     yield {
       type: EventType.MODEL_MESSAGE,
       thread_id: this.threadId,
       created_at: new Date().toISOString(),
       id: modelMessageEventId,
+      source: this.definition.modelClient.source,
     } satisfies ModelMessageEvent;
 
     let firstDeltaTimestamped = false;
@@ -1150,8 +1155,9 @@ export class AgentThread {
       usage: result.value.usage,
       toolMapping,
     });
+    const messageSource = this.definition.modelClient.source;
     const assistantMessage: InternalEnrichedAssistantMessage = await enrichAssistantMessage({
-      assistantMessage: result.value.output,
+      assistantMessage: { ...result.value.output, source: messageSource },
       toolMapping,
       // During context persistence, we have the complete message and hence the tool arguments are available.
       // Hence, we resolve the underlying tool to get the tool information.
@@ -1161,7 +1167,7 @@ export class AgentThread {
     const finishReason = result.value.finish_reason;
     const agentAssistantMessage = buildModelMessageEvent({
       assistantMessage: await enrichAssistantMessage({
-        assistantMessage: result.value.output,
+        assistantMessage: { ...result.value.output, source: messageSource },
         toolMapping,
         // Same unresolved wrapper as SSE deltas so listTurnEvents matches a folded stream.
         resolveUnderlyingTool: false,

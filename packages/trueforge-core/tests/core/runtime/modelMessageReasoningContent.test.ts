@@ -50,6 +50,7 @@ async function* reasoningAnswerStream(): AsyncGenerator<
       content: 'hello',
       reasoning_content: 'step one',
       thinking_blocks: [{ type: 'thinking', thinking: 'step one' }],
+      source: 'openai/test-provider/test-model',
     },
     usage: getEmptyUsage(),
     finish_reason: 'stop',
@@ -59,6 +60,7 @@ async function* reasoningAnswerStream(): AsyncGenerator<
 describe('AgentThread model.message reasoning_content', () => {
   it('persists reasoning_content on the event and omits it from context', async () => {
     const modelClient: ILLM = {
+      source: 'test/test/test-model',
       create: jest.fn().mockImplementation(() => reasoningAnswerStream()),
       createNonStream: jest.fn(),
     };
@@ -86,10 +88,14 @@ describe('AgentThread model.message reasoning_content', () => {
     expect(append?.context[0]).not.toHaveProperty('reasoning_content');
     expect(append?.context[0]).toMatchObject({
       thinking_blocks: [{ type: 'thinking', thinking: 'step one' }],
+      source: 'test/test/test-model',
     });
 
     const modelMessage = append?.output.find(e => e.type === 'model.message');
-    expect(modelMessage).toMatchObject({ reasoning_content: 'step one' });
+    expect(modelMessage).toMatchObject({
+      reasoning_content: 'step one',
+      source: 'test/test/test-model',
+    });
     expect(modelMessage).not.toHaveProperty('thinking_blocks');
   });
 });

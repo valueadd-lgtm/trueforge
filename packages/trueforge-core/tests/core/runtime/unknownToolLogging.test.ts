@@ -81,6 +81,7 @@ async function* finalAnswerStream(): AsyncGenerator<
 describe('AgentThread unknown tool logging', () => {
   it('warns once with the canonical message and emits unknown tool_info', async () => {
     const modelClient: ILLM = {
+      source: 'test/test/test-model',
       create: jest
         .fn()
         .mockImplementationOnce(() => unknownToolStream())

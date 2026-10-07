@@ -242,6 +242,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -262,6 +263,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -283,6 +285,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -304,6 +307,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -339,6 +343,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -367,6 +372,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -394,6 +400,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -423,6 +430,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -447,6 +455,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -466,6 +475,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -485,6 +495,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('tool-calls'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -507,6 +518,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -527,6 +539,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('tool-calls'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -546,6 +559,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('tool-calls'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -566,6 +580,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('tool-calls'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
 
@@ -576,7 +591,11 @@ describe('mapStreamToChunks', () => {
     const usage = makeUsage(20, 10);
     usage.raw = { costInUSD: 0.12 };
     const { chunks, final } = await drainStream(
-      mapStreamToChunks({ stream: makeStream([makeFinishStep('length', usage)]), chunkMeta: CHUNK_META }),
+      mapStreamToChunks({
+        stream: makeStream([makeFinishStep('length', usage)]),
+        chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
+      }),
     );
 
     const finishChunk = chunks.find(c => c.choices[0]?.finish_reason !== null);
@@ -598,6 +617,7 @@ describe('mapStreamToChunks', () => {
         mapStreamToChunks({
           stream: makeStream([{ type: 'error', error: cause }]),
           chunkMeta: CHUNK_META,
+          source: 'test/test/test-model',
         }),
       ),
     ).rejects.toMatchObject({ message: 'upstream error', cause });
@@ -609,6 +629,7 @@ describe('mapStreamToChunks', () => {
         mapStreamToChunks({
           stream: makeStream([{ type: 'text-delta', id: 't1', text: 'partial' }, { type: 'abort' }]),
           chunkMeta: CHUNK_META,
+          source: 'test/test/test-model',
         }),
       ),
     ).rejects.toMatchObject({ name: 'AbortError' });
@@ -626,6 +647,7 @@ describe('mapStreamToChunks', () => {
         mapStreamToChunks({
           stream: makeStream([{ type: 'error', error: cause }]),
           chunkMeta: CHUNK_META,
+          source: 'test/test/test-model',
         }),
       ),
     ).rejects.toMatchObject({
@@ -640,6 +662,7 @@ describe('mapStreamToChunks', () => {
         mapStreamToChunks({
           stream: makeStream([{ type: 'error', error: { message: 'The requested model does not exist.' } }]),
           chunkMeta: CHUNK_META,
+          source: 'test/test/test-model',
         }),
       ),
     ).rejects.toMatchObject({
@@ -654,6 +677,7 @@ describe('mapStreamToChunks', () => {
       mapStreamToChunks({
         stream: makeStream([{ type: 'text-delta', id: 't1', text: 'x' }, makeFinishStep('stop')]),
         chunkMeta: meta,
+        source: 'test/test/test-model',
       }),
     );
     const chunk = chunks[0];
@@ -673,6 +697,7 @@ describe('mapStreamToChunks', () => {
           makeFinishStep('stop'),
         ]),
         chunkMeta: CHUNK_META,
+        source: 'test/test/test-model',
       }),
     );
     // Only the finish-step chunk is emitted (no text-delta chunks for structural parts).

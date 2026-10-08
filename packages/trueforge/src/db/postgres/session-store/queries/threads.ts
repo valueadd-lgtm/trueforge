@@ -43,6 +43,7 @@ export async function addThreads(db: Kysely<Database>, input: AddThreadsInput): 
     await assertTurnRunning(trx, {
       session_id: input.session_id,
       turn_id: input.turn_id,
+      active_executor_id: input.active_executor_id,
     });
 
     const now = new Date();
@@ -154,6 +155,7 @@ export async function removeThreads(db: Kysely<Database>, input: RemoveThreadsIn
   const keys: TurnKeys = {
     session_id: input.session_id,
     turn_id: input.turn_id,
+    active_executor_id: input.active_executor_id,
   };
   const onFence = sql<boolean>`EXISTS (SELECT 1 FROM turn_fence)`;
 
@@ -297,6 +299,7 @@ export async function appendToThreadContext(db: Kysely<Database>, input: AppendT
     keys: {
       session_id: input.session_id,
       turn_id: input.turn_id,
+      active_executor_id: input.active_executor_id,
     },
     thread_id: input.thread_id,
     context: input.context,
@@ -316,6 +319,7 @@ export async function overwriteThreadContext(db: Kysely<Database>, input: Overwr
     keys: {
       session_id: input.session_id,
       turn_id: input.turn_id,
+      active_executor_id: input.active_executor_id,
     },
     thread_id: input.event.thread_id,
     context: input.event.context,
@@ -340,6 +344,7 @@ export async function patchMCPServers(db: Kysely<Database>, input: PatchMCPServe
   const keys: TurnKeys = {
     session_id: input.session_id,
     turn_id: input.turn_id,
+    active_executor_id: input.active_executor_id,
   };
 
   const result = await db
@@ -369,6 +374,7 @@ export async function patchSandboxInfo(db: Kysely<Database>, input: PatchSandbox
   const keys: TurnKeys = {
     session_id: input.session_id,
     turn_id: input.turn_id,
+    active_executor_id: input.active_executor_id,
   };
 
   const result = await db
